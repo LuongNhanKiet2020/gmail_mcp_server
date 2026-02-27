@@ -30,7 +30,7 @@ print(f"   👉 10 từ đầu tiên: {first_10_words}")
 # ── Bước 3: REPLY vào email từ nathan (bài đánh giá) ──
 # Tìm email bài đánh giá từ nathan
 print("\n🔍 Tìm email bài đánh giá từ nathan...")
-nathan_search = search_emails('from:luongnhankiet2023@gmail.com subject:"Bài đánh giá năng lực"', max_results=1)
+nathan_search = search_emails('from:nathan@technext.asia subject:"Bài đánh giá năng lực"', max_results=1)
 print(nathan_search)
 nathan_msg_id = nathan_search.split('📧 ID: ')[1].split('\n')[0].strip()
 
