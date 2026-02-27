@@ -32,7 +32,6 @@ WMO_CODES = {
 
 
 def _get_weather_description(code: int) -> str:
-    """Convert WMO weather code to Vietnamese description."""
     return WMO_CODES.get(code, f"Mã thời tiết: {code}")
 
 
@@ -40,11 +39,6 @@ def _get_weather_description(code: int) -> str:
 
 @mcp.tool()
 def get_weather(city: str = "Ho Chi Minh City") -> str:
-    """
-    Get current weather for a city (optimized for Vietnamese cities).
-    Returns temperature, humidity, wind speed, and weather condition.
-    Examples: "Ha Noi", "Ho Chi Minh City", "Da Nang", "Hue"
-    """
     try:
         with httpx.Client(timeout=10) as client:
             # Step 1: Geocode the city name
@@ -100,10 +94,6 @@ def get_weather(city: str = "Ho Chi Minh City") -> str:
 
 @mcp.tool()
 def get_weather_forecast(city: str = "Ho Chi Minh City", days: int = 3) -> str:
-    """
-    Get weather forecast for the next N days (max 7).
-    Returns daily max/min temperature and weather condition.
-    """
     days = min(days, 7)
     try:
         with httpx.Client(timeout=10) as client:

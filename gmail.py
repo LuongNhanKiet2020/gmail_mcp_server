@@ -46,12 +46,10 @@ def _get_gmail_service():
 
 
 def _get_header(headers: list, name: str, default: str = "") -> str:
-    """Extract a header value by name from Gmail headers list."""
     return next((h["value"] for h in headers if h["name"].lower() == name.lower()), default)
 
 
 def _decode_body(payload: dict) -> str:
-    """Recursively extract plain text body from a Gmail message payload."""
     if "parts" in payload:
         for part in payload["parts"]:
             if part["mimeType"] == "text/plain":
@@ -73,11 +71,6 @@ def _decode_body(payload: dict) -> str:
 
 @mcp.tool()
 def search_emails(query: str, max_results: int = 5) -> str:
-    """
-    Search Gmail emails using Gmail search query syntax.
-    Examples: "from:me subject:ứng tuyển", "is:unread", "after:2024/01/01"
-    Returns list of matching emails with ID, subject, date, and snippet.
-    """
     service = _get_gmail_service()
     if not service:
         return "Error: credentials.json not found."
@@ -119,10 +112,6 @@ def search_emails(query: str, max_results: int = 5) -> str:
 
 @mcp.tool()
 def get_email_content(message_id: str) -> str:
-    """
-    Get the full content of an email by its message ID.
-    Returns date, headers, and the plain text body (up to 2000 chars).
-    """
     service = _get_gmail_service()
     if not service:
         return "Error: credentials.json not found."
@@ -162,10 +151,6 @@ def get_email_content(message_id: str) -> str:
 
 @mcp.tool()
 def reply_to_email(message_id: str, reply_text: str) -> str:
-    """
-    Reply to an email by its message ID.
-    The reply will be sent in the same thread and properly threaded in Gmail.
-    """
     service = _get_gmail_service()
     if not service:
         return "Error: credentials.json not found."
