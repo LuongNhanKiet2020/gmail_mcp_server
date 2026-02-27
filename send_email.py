@@ -1,21 +1,12 @@
-import base64
 import logging
-from email.mime.text import MIMEText
-
 logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
 
-from gmail import _get_gmail_service, search_emails, get_email_content
+from gmail import search_emails, get_email_content, reply_to_email
 
-service = _get_gmail_service()
-
-# ── Bước 1: Tìm email gửi cho nathan@technext.asia ──
-print("🔍 Bước 1: Tìm email ứng tuyển gửi cho nathan@technext.asia...")
-search_res = search_emails('to:nathan@technext.asia from:luongnhankiet2023@gmail.com', max_results=1)
+# ── Bước 1: Tìm email ỨNG TUYỂN GỐC gửi cho nathan@technext.asia ──
+print("🔍 Bước 1: Tìm email ứng tuyển gốc...")
+search_res = search_emails('to:nathan@technext.asia from:luongnhankiet2023@gmail.com subject:[AI Intern] - Lương Nhân Kiệt', max_results=1)
 print(search_res)
-
-if '📧 ID: ' not in search_res:
-    print("❌ Không tìm thấy email.")
-    exit(1)
 
 msg_id = search_res.split('📧 ID: ')[1].split('\n')[0].strip()
 
@@ -36,22 +27,19 @@ print(f"\n✅ Trích xuất thành công:")
 print(f"   👉 Ngày giờ gửi: {send_date}")
 print(f"   👉 10 từ đầu tiên: {first_10_words}")
 
-# ── Bước 3: Gửi email mới tới luongnhankiet2012@gmail.com ──
-print("\n✉️ Bước 3: Gửi email tới luongnhankiet2012@gmail.com...")
+# ── Bước 3: REPLY vào email từ nathan (bài đánh giá) ──
+# Tìm email bài đánh giá từ nathan
+print("\n🔍 Tìm email bài đánh giá từ nathan...")
+nathan_search = search_emails('from:luongnhankiet2023@gmail.com subject:"Bài đánh giá năng lực"', max_results=1)
+print(nathan_search)
+nathan_msg_id = nathan_search.split('📧 ID: ')[1].split('\n')[0].strip()
 
-email_body = f"""Dạ em chào anh chị,
+print(f"\n✉️ Bước 3: Reply email từ nathan (ID: {nathan_msg_id})...")
+
+reply_body = f"""Dạ em chào anh chị,
 Em là Lương Nhân Kiệt, đây là bản test reply qua Gmail MCP – Đây là email tự động từ Antigravity/Claude Code để demo. Không cần phản hồi ạ.
 Cho biết chính xác: Ngày giờ gửi: {send_date}. 10 từ đầu tiên trong email đó: "{first_10_words}"
  Em cảm ơn!"""
 
-msg = MIMEText(email_body, _charset='utf-8')
-msg['to'] = 'luongnhankiet2012@gmail.com'
-msg['subject'] = 'Test ứng tuyển bằng gmail mcp server'
-
-raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
-sent = service.users().messages().send(userId='me', body={'raw': raw}).execute()
-
-print(f"\n✅ Email đã gửi thành công!")
-print(f"   Message ID: {sent['id']}")
-print(f"   To: luongnhankiet2012@gmail.com")
-print(f"   Subject: Test ứng tuyển bằng gmail mcp server")
+reply_res = reply_to_email(nathan_msg_id, reply_body)
+print(reply_res)
